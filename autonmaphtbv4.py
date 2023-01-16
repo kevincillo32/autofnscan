@@ -2,6 +2,7 @@ import os
 import re
 from termcolor import colored
 import subprocess
+import pyperclip
 
 # clear the console
 
@@ -55,14 +56,15 @@ def escanear_puertos(ip_address, folder_name):
     print(colored(f"El resultado del escaneo se ha guardado en {folder_name}/nmap/allPortsTCP", "green"))
     extractPorts(f"{folder_name}/nmap/allPortsTCP")
 
+
 def extractPorts(file_path):
     with open(file_path, 'r') as f:
         ports = [re.findall(r'open/(\d+)',line) for line in f if "open" in line]
     ports = [i[0] for i in ports if i]
     ports_str = ",".join(ports)
-    process = subprocess.Popen(['xclip', '-selection', 'clipboard'], stdin=subprocess.PIPE)
-    process.communicate(input=ports_str.encode('utf-8'))
-    #print(colored(f"Los puertos abiertos se han copiado al portapeles: {ports_str}", "green"))
+    pyperclip.copy(ports_str)
+    print(colored(f"Los puertos abiertos se han copiado al portapeles: {ports_str}", "green"))
+
 
 
 def escanear_puertos_personalizados(ip_address, folder_name):
