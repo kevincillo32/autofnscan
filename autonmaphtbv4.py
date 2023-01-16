@@ -1,6 +1,6 @@
+from termcolor import colored
 import os
 import re
-import pyperclip
 
 class Carpeta:
     def __init__(self, nombre):
@@ -19,8 +19,8 @@ def determinar_sistema_operativo(ip_address):
         ttl = int(ttl.group(1))
         so = {
             0: "Otro",
-            64: "Windows",
-            128: "Linux"
+            64: "Linux",
+            128: "Windows"
         }
         for key in so:
             if ttl <= key:
@@ -39,29 +39,28 @@ def escanear_puertos(ip_address, folder_name):
     # Unir los puertos con comas
     puertos = ",".join(puertos)
     # Copiar los puertos a la clipboard
-    pyperclip.copy(puertos)
-    print("Los puertos abiertos se han copiado a la clipboard")
-    # Pedir al usuario que ingrese los puertos escaneados
-    puertos = input("Ingresa los puertos escaneados (separados por comas): ")
-    # Ejecutar el segundo escaneo con nmap
-    nmap_cmd = f"nmap -sCV -p {puertos} {ip_address} -oN {folder_name}/nmap/targeted"
-    os.system(nmap_cmd)
-    print("Escaneado completado")
+    os.system(f'echo {puertos} | xclip -selection clipboard')
 
-# Pedir al usuario el nombre de la carpeta principal y la dirección IP
-folder_name = input('Ingresa el nombre de la carpeta principal:')
-ip_address = input('Ingresa la dirección IP a escanear:')
+    # Pedir al usuario los puertos a escanear
+    puertos_escanear = input("Introduce los puertos a escanear: ")
+    nmap_cmd = f"nmap -sCV -p {puertos_escanear} {ip_address} -oN {folder_name}/nmap/targeted"
+    os.system(nmap_cmd)
 
 # Crear la carpeta principal
-carpeta = Carpeta(folder_name)
+folder_name = input("Introduce el nombre de la carpeta principal: ")
+folder = Carpeta(folder_name)
+
+# Crear subcarpetas
 folders = ['nmap', 'content', 'exploits', 'scripts']
-for folder in folders:
-    carpeta.crear_carpeta(folder)
+for folder_name in folders:
+    folder.crear_carpeta(folder_name)
 
-# Determinar el sistema operativo de la máquina
+# Pedir al usuario la dirección IP
+ip_address = input("Introduce la dirección IP: ")
+
+# Determinar el sistema operativo
 sistema_operativo = determinar_sistema_operativo(ip_address)
-print(f"El sistema operativo de la máquina {ip_address} es: {sistema_operativo}")
+print(colored(f"El sistema operativo de la máquina {ip_address} es: {sistema_operativo}", "green"))
 
-# Escanear los puertos
+# Escanear puertos
 escanear_puertos(ip_address, folder_name)
-
