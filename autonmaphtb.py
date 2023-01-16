@@ -1,34 +1,31 @@
 import os
 
-def create_folders(folder_name):
-    """
-    Crea las carpetas necesarias para guardar los resultados del escaneo
-    """
+def create_main_folder():
+    folder_name = input("Nombre del laboratorio: ")
+    os.makedirs(folder_name, exist_ok=True)
+    return folder_name
+
+def create_subfolders(folder_name):
     os.makedirs(folder_name+"/nmap/content/script/exploits", exist_ok=True)
 
-def nmap_scan(folder_name,ip_address):
-    """
-    Realiza el escaneo con nmap y guarda los puertos escaneados en un archivo
-    """
+def get_ip():
+    ip_address = input("Introduce la dirección IP a escanear: ")
+    return ip_address
+
+def nmap_scan_1(folder_name,ip_address):
     os.system("nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn "+ip_address+" -oG "+folder_name+"/nmap")
 
-def get_ports(folder_name):
-    """
-    Obtiene los puertos escaneados con nmap
-    """
+def get_open_ports(folder_name):
     return os.popen("grep open "+folder_name+"/nmap/allPortsTCP | awk '{print $1}'").read().strip().replace("\n",",")
 
-def nmap_scan_targeted(folder_name,ip_address,ports):
-    """
-    Realiza el escaneo detallado de los puertos escaneados y guarda el resultado en un archivo
-    """
+def nmap_scan_2(folder_name,ip_address,ports):
     os.system("nmap -sCV -p"+ports+" "+ip_address+" --oN "+folder_name+"/nmap/targeted")
 
 def main():
-    folder_name = input("Nombre del laboratorio: ")
-    os.makedirs(folder_name, exist_ok=True)
-    create_folders(folder_name)
-    ip_address = input("Introduce la dirección IP a escanear: ")
-    nmap_scan(folder_name,ip_address)
-    ports = get_ports(folder_name)
-    nmap_scan_targeted(folder_name,ip_address,ports)
+    folder_name = create_main_folder()
+    create_subfolders(folder_name)
+    ip_address = get_ip()
+    nmap_scan_1(folder_name,ip_address)
+    ports = get_open_ports(folder_name)
+    nmap_scan_2(folder_name,ip_address,ports)
+
