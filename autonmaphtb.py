@@ -1,31 +1,40 @@
 import os
+import re
 
-def create_main_folder():
-    folder_name = input("Nombre del laboratorio: ")
-    os.makedirs(folder_name, exist_ok=True)
-    return folder_name
+folder_name = input("Ingrese el nombre de la carpeta principal: ")
 
-def create_subfolders(folder_name):
-    os.makedirs(folder_name+"/nmap/content/script/exploits", exist_ok=True)
+while True:
+    ip_address = input("Ingrese la dirección IP: ")
+    if re.match(r"^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$", ip_address):
+        break
+    else:
+        print("Dirección IP no válida. Inténtelo de nuevo.")
 
-def get_ip():
-    ip_address = input("Introduce la dirección IP a escanear: ")
-    return ip_address
+os.mkdir(folder_name)
+os.mkdir(folder_name + '/nmap')
+os.mkdir(folder_name + '/content')
+os.mkdir(folder_name + '/exploits')
+os.mkdir(folder_name + '/scripts')
+print(f"Carpetas creadas exitosamente en {folder_name}")
+print(f"La dirección IP ingresada es: {ip_address}")
 
-def nmap_scan_1(folder_name,ip_address):
-    os.system("nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn "+ip_address+" -oG "+folder_name+"/nmap")
 
-def get_open_ports(folder_name):
-    return os.popen("grep open "+folder_name+"/nmap/allPortsTCP | awk '{print $1}'").read().strip().replace("\n",",")
+ping = os.popen("ping -c 3 " + ip_address).read()
+ttl = re.search(r"ttl=(\d+)", ping)
 
-def nmap_scan_2(folder_name,ip_address,ports):
-    os.system("nmap -sCV -p"+ports+" "+ip_address+" --oN "+folder_name+"/nmap/targeted")
+if ttl:
+    ttl = int(ttl.group(1))
+    if ttl <= 64:
+        os = "Windows"
+    elif ttl <= 128:
+        os = "Linux"
+    else:
+        os = "Otro"
+    print(f"El sistema operativo de la máquina {ip_address} es: {os}")
+else:
+    print("No se pudo determinar el sistema operativo de la máquina")
 
-def main():
-    folder_name = create_main_folder()
-    create_subfolders(folder_name)
-    ip_address = get_ip()
-    nmap_scan_1(folder_name,ip_address)
-    ports = get_open_ports(folder_name)
-    nmap_scan_2(folder_name,ip_address,ports)
+nmap_cmd = "nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn " + ip_address + " -oG " + folder_name + "/nmap/allPortsTCP"
 
+os.system(nmap_cmd)
+print(f"El resultado del escaneo se ha guardado en {folder_name}/nmap/allPortsTCP")
