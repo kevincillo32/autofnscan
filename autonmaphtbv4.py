@@ -1,6 +1,6 @@
 import os
 import re
-import PySimpleGUI as sg
+import pyperclip
 
 class Carpeta:
     def __init__(self, nombre):
@@ -19,8 +19,8 @@ def determinar_sistema_operativo(ip_address):
         ttl = int(ttl.group(1))
         so = {
             0: "Otro",
-            64: "Linux",
-            128: "Windows"
+            64: "Windows",
+            128: "Linux"
         }
         for key in so:
             if ttl <= key:
@@ -35,17 +35,22 @@ def escanear_puertos(ip_address, folder_name):
 
     # Abrir el archivo allPortsTCP y obtener solo los puertos abiertos
     with open(f'{folder_name}/nmap/allPortsTCP', 'r') as file:
-            # Abrir el archivo allPortsTCP y obtener solo los puertos abiertos
-        with open(f'{folder_name}/nmap/allPortsTCP', 'r') as file:
-            puertos = [line.split()[1] for line in file if line.startswith("Ports:")]
+        puertos = [line.split()[1] for line in file if line.startswith("Ports:")]
     # Unir los puertos con comas
     puertos = ",".join(puertos)
+    # Copiar los puertos a la clipboard
+    pyperclip.copy(puertos)
+    print("Los puertos abiertos se han copiado a la clipboard")
+    # Pedir al usuario que ingrese los puertos escaneados
+    puertos = input("Ingresa los puertos escaneados (separados por comas): ")
     # Ejecutar el segundo escaneo con nmap
     nmap_cmd = f"nmap -sCV -p {puertos} {ip_address} -oN {folder_name}/nmap/targeted"
     os.system(nmap_cmd)
+    print("Escaneado completado")
 
-folder_name = sg.popup_get_text('Nombre de la carpeta principal:')
-ip_address = sg.popup_get_text('Dirección IP a escanear:')
+# Pedir al usuario el nombre de la carpeta principal y la dirección IP
+folder_name = input('Ingresa el nombre de la carpeta principal:')
+ip_address = input('Ingresa la dirección IP a escanear:')
 
 # Crear la carpeta principal
 carpeta = Carpeta(folder_name)
@@ -59,6 +64,4 @@ print(f"El sistema operativo de la máquina {ip_address} es: {sistema_operativo}
 
 # Escanear los puertos
 escanear_puertos(ip_address, folder_name)
-
-sg.popup("Escaneado completado")
 
