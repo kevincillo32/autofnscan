@@ -35,8 +35,8 @@ def determinar_sistema_operativo(ip_address):
         ttl = int(ttl.group(1))
         so = {
             0: "Otro",
-            64: "Windows",
-            128: "Linux"
+            64: "Linux",
+            128: "Windows"
         }
         for key in so:
             if ttl <= key:
