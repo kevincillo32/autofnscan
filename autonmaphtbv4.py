@@ -54,22 +54,10 @@ def escanear_puertos(ip_address, folder_name):
     nmap_cmd = "nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn " + ip_address + " -oG " + folder_name + "/nmap/allPortsTCP"
     os.system(nmap_cmd)
     print(colored(f"El resultado del escaneo se ha guardado en {folder_name}/nmap/allPortsTCP", "green"))
-    extractPorts(f"{folder_name}/nmap/allPortsTCP")
-
-
-folder_name="carpeta"
-nmap_folder="subcarpeta"
-file_path="$folder_name/$nmap_folder/allPortsTCP"
-
-import subprocess
-
-folder_name = "carpeta"
-nmap_folder = "subcarpeta"
-file_path = f"{folder_name}/{nmap_folder}/allPortsTCP"
-
-def extractPorts():
-    subprocess.call(["bash", "-c", f"cd {folder_name}/{nmap_folder} && ports=$(cat {file_path} | grep -oP '\d{1,5}/open' | awk '{{print $1}}' FS='/' | xargs | tr ' ' ',') && ip_address=$(cat {file_path} | grep -oP '\d{{1,3}}.\d{{1,3}}.\d{{1,3}}.\d{{1,3}}' | sort -u | head -n 1) && echo -e '\n[*] Extracting information...\n' > extractPorts.tmp && echo -e '\t[*] IP Address: $ip_address'  >> extractPorts.tmp && echo -e '\t[*] Open ports: $ports\n'  >> extractPorts.tmp && echo $ports | tr -d '\n' | xclip -sel clip && echo -e '[*] Ports copied to clipboard\n'  >> extractPorts.tmp && cat extractPorts.tmp && rm extractPorts.tmp"])
-
+    file_path = f"{folder_name}/nmap/allPortsTCP"
+    extract_ports_cmd = f"ports=$(cat {file_path} | grep -oP '\\d{{1,5}}/open' | awk '{{print $1}}' FS='/' | xargs | tr ' ' ','); ip_address=$(cat {file_path} | grep -oP '\\d{{1,3}}\\.\\d{{1,3}}\\.\\d{{1,3}}\\.\\d{{1,3}}' | sort -u | head -n 1); echo $ports | tr -d '\n' | xclip -sel clip"
+    subprocess.call(["bash", "-c", extract_ports_cmd])
+    print(colored("Los puertos han sido copiados en la clipboard exitosamente") "green")
 
 
 def escanear_puertos_personalizados(ip_address, folder_name):
