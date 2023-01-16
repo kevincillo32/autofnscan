@@ -19,8 +19,8 @@ def determinar_sistema_operativo(ip_address):
         ttl = int(ttl.group(1))
         so = {
             0: "Otro",
-            64: "Windows",
-            128: "Linux"
+            64: "Linux",
+            128: "Windows"
         }
         for key in so:
             if ttl <= key:
@@ -36,8 +36,8 @@ def escanear_puertos(ip_address, folder_name):
     # Abrir el archivo allPortsTCP y obtener solo los puertos abiertos
     with open(f'{folder_name}/nmap/allPortsTCP', 'r') as file:
             # Abrir el archivo allPortsTCP y obtener solo los puertos abiertos
-    with open(f'{folder_name}/nmap/allPortsTCP', 'r') as file:
-        puertos = [line.split()[1] for line in file if line.startswith("Ports:")]
+        with open(f'{folder_name}/nmap/allPortsTCP', 'r') as file:
+            puertos = [line.split()[1] for line in file if line.startswith("Ports:")]
     # Unir los puertos con comas
     puertos = ",".join(puertos)
     # Ejecutar el segundo escaneo con nmap
