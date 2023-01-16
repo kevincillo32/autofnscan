@@ -42,18 +42,20 @@ def escanear_puertos(ip_address, folder_name):
     os.system(f'echo {puertos} | xclip -selection clipboard')
 
     # Pedir al usuario los puertos a escanear
-    puertos_escanear = input("Introduce los puertos a escanear: ")
+    puertos_escanear = input(colored("Introduce los puertos a escanear: ", "green"))
     nmap_cmd = f"nmap -sCV -p {puertos_escanear} {ip_address} -oN {folder_name}/nmap/targeted"
     os.system(nmap_cmd)
 
 # Crear la carpeta principal
-folder_name = input("Introduce el nombre de la carpeta principal: ")
+folder_name = input(colored("Introduce el nombre de la carpeta principal: ", "green"))
 folder = Carpeta(folder_name)
+print(colored(f"Carpeta {folder_name} creada", "green"))
 
 # Crear subcarpetas
 folders = ['nmap', 'content', 'exploits', 'scripts']
 for folder_name in folders:
     folder.crear_carpeta(folder_name)
+    print(colored(f"Carpeta {folder_name} creada", "green"))
 
 # Pedir al usuario la dirección IP
 ip_address = input("Introduce la dirección IP: ")
