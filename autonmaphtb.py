@@ -1,13 +1,5 @@
 import os
 
-def main():
-    folder_name = input("Nombre del laboratorio: ")
-    create_folders(folder_name)
-    ip_address = input("Introduce la dirección IP a escanear: ")
-    nmap_scan(folder_name,ip_address)
-    ports = get_ports(folder_name)
-    nmap_scan_targeted(folder_name,ip_address,ports)
-
 def create_folders(folder_name):
     """
     Crea las carpetas necesarias para guardar los resultados del escaneo
@@ -31,3 +23,12 @@ def nmap_scan_targeted(folder_name,ip_address,ports):
     Realiza el escaneo detallado de los puertos escaneados y guarda el resultado en un archivo
     """
     os.system("nmap -sCV -p"+ports+" "+ip_address+" --oN "+folder_name+"/nmap/targeted")
+
+def main():
+    folder_name = input("Nombre del laboratorio: ")
+    os.makedirs(folder_name, exist_ok=True)
+    create_folders(folder_name)
+    ip_address = input("Introduce la dirección IP a escanear: ")
+    nmap_scan(folder_name,ip_address)
+    ports = get_ports(folder_name)
+    nmap_scan_targeted(folder_name,ip_address,ports)
