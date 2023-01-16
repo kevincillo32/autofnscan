@@ -2,6 +2,10 @@ import os
 import re
 from termcolor import colored
 
+# clear the console
+
+os.system('cls' if os.name == 'nt' else 'clear')
+
 # Clase para crear y mostrar informacion de las carpetas
 class Carpeta:
     def __init__(self, nombre):
@@ -44,13 +48,13 @@ def determinar_sistema_operativo(ip_address):
 
 # Funcion para escanear todos los puertos TCP
 def escanear_puertos(ip_address, folder_name):
-       nmap_cmd = "nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn " + ip_address + " -oG " + folder_name + "/nmap/allPortsTCP"
+    nmap_cmd = "nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn " + ip_address + " -oG " + folder_name + "/nmap/allPortsTCP"
     os.system(nmap_cmd)
     print(colored(f"El resultado del escaneo se ha guardado en {folder_name}/nmap/allPortsTCP", "green"))
 
 # Funcion para escanear solo los puertos abiertos
 def escanear_puertos_abiertos(ip_address, folder_name):
-    # Leer el archivo allPortsTCP y obtener solo los puertos abiertos
+        # Leer el archivo allPortsTCP y obtener solo los puertos abiertos
     with open(folder_name + '/nmap/allPortsTCP') as f:
         puertos_abiertos = [line.split()[0].split("/")[0] for line in f if "open" in line]
     puertos = ",".join(puertos_abiertos)
@@ -67,8 +71,6 @@ carpeta_principal = Carpeta(folder_name)
 
 folders = ['nmap', 'content', 'exploits', 'scripts']
 for folder in folders:
-    folders = ['nmap', 'content', 'exploits', 'scripts']
-for folder in folders:
     carpeta_principal.crear_carpeta(folder)
 
 ip_address = input(colored("Ingrese la dirección IP a escanear: ", "cyan"))
@@ -76,3 +78,5 @@ if validar_ip(ip_address):
     determinar_sistema_operativo(ip_address)
     escanear_puertos(ip_address, folder_name)
     escanear_puertos_abiertos(ip_address, folder_name)
+
+
