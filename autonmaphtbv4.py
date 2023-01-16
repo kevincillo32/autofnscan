@@ -57,14 +57,15 @@ def escanear_puertos(ip_address, folder_name):
 
 def extractPorts(file_path):
     with open(file_path, 'r') as f:
-        ports = [re.findall(r'open/(\d+)',line) for line in f if "open" in line]
+        ports = [re.findall(r'(\d+)\/open', line) for line in f if "open" in line]
     ports = [i[0] for i in ports if i]
     ports_str = ",".join(ports)
     process = subprocess.Popen(['xclip', '-selection', 'clipboard'], stdin=subprocess.PIPE)
     process.communicate(input=ports_str.encode('utf-8'))
-    print(colored(f"Los puertos abiertos se han copiado al portapeles: {ports_str}", "green"))
+    print(f"Los puertos abiertos se han copiado al portapeles: {ports_str}")
 
-
+# se llama a la funcion y se pasa el archivo allPortsTCP como argumento
+extractPorts("nmap/allPortsTCP")
 
 def escanear_puertos_personalizados(ip_address, folder_name):
     puertos = input("Introduzca los puertos a escanear separados por comas: ")
