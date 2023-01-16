@@ -57,14 +57,21 @@ def escanear_puertos(ip_address, folder_name):
     extractPorts(f"{folder_name}/nmap/allPortsTCP")
 
 
-def extractPorts(file_path):
-    with open(file_path, 'r') as f:
-        ports = [re.findall(r'open/(\d+)',line) for line in f if "open" in line]
-    ports = [i[0] for i in ports if i]
-    ports_str = ",".join(ports)
-    pyperclip.copy(ports_str)
-    print(colored(f"Los puertos abiertos se han copiado al portapeles: {ports_str}", "green"))
+folder_name="carpeta"
+nmap_folder="subcarpeta"
+file_path="$folder_name/$nmap_folder/allPortsTCP"
 
+def extractPorts(){
+	cd "$folder_name/$nmap_folder"
+	ports="$(cat "$file_path" | grep -oP '\d{1,5}/open' | awk '{print $1}' FS='/' | xargs | tr ' ' ',')"
+	ip_address="$(cat "$file_path" | grep -oP '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}' | sort -u | head -n 1)"
+	echo -e "\n[*] Extracting information...\n" > extractPorts.tmp
+	echo -e "\t[*] IP Address: $ip_address"  >> extractPorts.tmp
+	echo -e "\t[*] Open ports: $ports\n"  >> extractPorts.tmp
+	echo $ports | tr -d '\n' | xclip -sel clip
+	echo -e "[*] Ports copied to clipboard\n"  >> extractPorts.tmp
+	cat extractPorts.tmp; rm extractPorts.tmp
+}
 
 
 def escanear_puertos_personalizados(ip_address, folder_name):
