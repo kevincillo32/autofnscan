@@ -24,6 +24,7 @@ def nmap_scan_targeted(folder_name,ip_address):
 
 def main():
     folder_name = input("Nombre del laboratorio: ")
+    os.makedirs(folder_name)
     create_folders(folder_name)
     ip_address = input("Introduce la dirección IP a escanear: ")
     nmap_scan(folder_name,ip_address)
