@@ -6,6 +6,7 @@ import pyperclip
 
 # clear the console
 
+
 os.system('cls' if os.name == 'nt' else 'clear')
 
 class Carpeta:
@@ -57,7 +58,7 @@ def escanear_puertos(ip_address, folder_name):
     file_path = f"{folder_name}/nmap/allPortsTCP"
     extract_ports_cmd = f"ports=$(cat {file_path} | grep -oP '\\d{{1,5}}/open' | awk '{{print $1}}' FS='/' | xargs | tr ' ' ','); ip_address=$(cat {file_path} | grep -oP '\\d{{1,3}}\\.\\d{{1,3}}\\.\\d{{1,3}}\\.\\d{{1,3}}' | sort -u | head -n 1); echo $ports | tr -d '\n' | xclip -sel clip"
     subprocess.call(["bash", "-c", extract_ports_cmd])
-    print(colored("Los puertos han sido copiados en la clipboard exitosamente") "green")
+    print(colored("Los puertos han sido copiados en la clipboard exitosamente", "green"))
 
 
 def escanear_puertos_personalizados(ip_address, folder_name):
@@ -75,5 +76,3 @@ if validar_ip(ip_address):
     determinar_sistema_operativo(ip_address)
     escanear_puertos(ip_address, nombre_carpeta)
     escanear_puertos_personalizados(ip_address, nombre_carpeta)
-
-
