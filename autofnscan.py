@@ -36,6 +36,8 @@ def validar_ip(ip_address):
 def determinar_sistema_operativo(ip_address):
     ping = os.popen("ping -c 3 " + ip_address).read()
     ttl = re.search(r"ttl=(\d+)", ping)
+    location = os.popen("curl -s " + ip_address + " -I | grep Location").read()
+    print(colored(f"La dirección es {location}", "green"))
     if ttl:
         ttl = int(ttl.group(1))
         so = {
@@ -50,6 +52,7 @@ def determinar_sistema_operativo(ip_address):
         print(colored(f"El sistema operativo de la máquina {ip_address} es: {sistema_operativo}", "green"))
     else:
         print(colored("No se pudo determinar el sistema operativo de la máquina", "red"))
+
 
 def escanear_puertos(ip_address, folder_name):
     nmap_cmd = "nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn " + ip_address + " -oG " + folder_name + "/nmap/allPortsTCP"
