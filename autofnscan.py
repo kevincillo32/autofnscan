@@ -4,9 +4,6 @@ from termcolor import colored
 import subprocess
 import pyperclip
 
-# clear the console
-
-
 os.system('cls' if os.name == 'nt' else 'clear')
 
 class Carpeta:
